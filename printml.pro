@@ -9,11 +9,13 @@ uri = org.slidesml.print
 # Input
 SOURCES += \
     Printer.cpp \
-    PrintMLPlugin.cpp
+    PrintMLPlugin.cpp \
+    PageSize.cpp
 
 HEADERS += \
     Printer.h \
-    PrintMLPlugin.h
+    PrintMLPlugin.h \
+    PageSize.h
 
 OTHER_FILES = qmldir \
     examples/PrintML.qml

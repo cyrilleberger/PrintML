@@ -4,14 +4,17 @@
 #include <QPainter>
 #include <QPrinter>
 
+#include "PageSize.h"
+
 Printer::Printer(QQuickItem *parent):
-  QQuickItem(parent), m_window(0), m_printer(0), m_painter(0), m_mode(GRAB_IMAGE)
+  QQuickItem(parent), m_window(0), m_printer(0), m_painter(0), m_mode(GRAB_IMAGE), m_pageSize(new PageSize)
 {
   // By default, QQuickItem does not draw anything. If you subclass
   // QQuickItem to create a visual item, you will need to uncomment the
   // following line and re-implement updatePaintNode()
 
   // setFlag(ItemHasContents, true);
+  connect(m_pageSize, SIGNAL(pageSizeChanged()), this, SLOT(updatePageSize()));
 }
 
 Printer::~Printer()
@@ -37,9 +40,9 @@ void Printer::startPrinting()
     return;
   }
   m_printer = new QPrinter;
-  m_printer->setOrientation(QPrinter::Landscape);
   m_printer->setFullPage(true);
   m_printer->setOutputFileName(m_filename);
+  m_printer->setPageSize(m_pageSize->pageSize());
 
   m_painter = new QPainter;
   m_painter->begin(m_printer);
@@ -92,5 +95,14 @@ void Printer::endPrinting()
     m_painter = 0;
     delete m_printer;
     m_printer = 0;
+  }
+}
+
+void Printer::updatePageSize()
+{
+  if(m_printer)
+  {
+    qDebug() << "updatePageSize" << m_pageSize->width() << " " << m_pageSize->height();
+    m_printer->setPageSize(m_pageSize->pageSize());
   }
 }

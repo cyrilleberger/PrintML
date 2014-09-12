@@ -11,6 +11,8 @@ Item {
     id: printer
     window: printwindow
     filename: "testprint.pdf"
+    pageSize.width: 200
+    pageSize.height: 70
   }
   Window
   {
