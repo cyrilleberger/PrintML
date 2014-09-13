@@ -5,6 +5,7 @@
 
 class QPrinter;
 
+class MiniPage;
 class PageSize;
 
 class Printer : public QQuickItem
@@ -23,6 +24,7 @@ private:
   Q_PROPERTY(QString filename READ filename WRITE setFilename NOTIFY filenameChanged)
   Q_PROPERTY(Mode mode READ mode WRITE setMode NOTIFY modeChanged)
   Q_PROPERTY(PageSize* pageSize READ pageSize)
+  Q_PROPERTY(MiniPage* miniPage READ miniPage)
 public:
   Printer(QQuickItem *parent = 0);
   ~Printer();
@@ -39,11 +41,11 @@ public:
   Mode mode() const { return m_mode; }
   void setMode(Mode _mode) { m_mode = _mode; emit(modeChanged()); }
   PageSize* pageSize() const { return m_pageSize; }
+  MiniPage* miniPage() const { return m_miniPage; }
 signals:
   void windowChanged();
   void filenameChanged();
   void modeChanged();
-  void pageSizeChanged();
 private slots:
   void updatePageSize();
 private:
@@ -53,6 +55,9 @@ private:
   QString       m_filename;
   Mode          m_mode;
   PageSize*     m_pageSize;
+  MiniPage*     m_miniPage;
+  QList<QRect>  m_miniPages;
+  int           m_miniPageIndex;
 };
 
 #endif // PRINTER_H

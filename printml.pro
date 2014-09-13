@@ -10,15 +10,18 @@ uri = org.slidesml.print
 SOURCES += \
     Printer.cpp \
     PrintMLPlugin.cpp \
-    PageSize.cpp
+    PageSize.cpp \
+    MiniPage.cpp
 
 HEADERS += \
     Printer.h \
     PrintMLPlugin.h \
-    PageSize.h
+    PageSize.h \
+    MiniPage.h
 
 OTHER_FILES = qmldir \
-    examples/PrintML.qml
+    examples/PrintML.qml \
+    examples/MiniPage.qml
 
 !equals(_PRO_FILE_PWD_, $$OUT_PWD) {
     copy_qmldir.target = $$OUT_PWD/qmldir
