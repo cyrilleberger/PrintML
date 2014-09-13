@@ -3,6 +3,19 @@ PrintML: QML Printing Module
 
 PrintML is a module for printing items.
 
+Installation
+------------
+
+```bash
+git clone https://github.com/cyrilleberger/PrintML
+cd PrintML
+mkdir build
+cd build
+qmake ..
+make
+sudo make install
+```
+
 Documentation
 -------------
 
