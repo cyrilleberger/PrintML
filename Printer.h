@@ -11,11 +11,16 @@ class PageSize;
 class Printer : public QQuickItem
 {
 public:
+  enum Orientation
+  {
+    Portrait,
+    Landscape
+  };
   enum Mode {
     GRAB_IMAGE, //< Print items by taking "screenshot", most accurate solution, but not efficient for PDF
     EFFICIENT   //< Efficient printing of items, but might not be accurate
   };
-  Q_ENUMS(Mode)
+  Q_ENUMS(Mode Orientation)
 
 private:
   Q_OBJECT
@@ -25,6 +30,7 @@ private:
   Q_PROPERTY(Mode mode READ mode WRITE setMode NOTIFY modeChanged)
   Q_PROPERTY(PageSize* pageSize READ pageSize)
   Q_PROPERTY(MiniPage* miniPage READ miniPage)
+  Q_PROPERTY(Orientation orientation READ orientation WRITE setOrientation NOTIFY orientationChanged)
 public:
   Printer(QQuickItem *parent = 0);
   ~Printer();
@@ -42,10 +48,13 @@ public:
   void setMode(Mode _mode) { m_mode = _mode; emit(modeChanged()); }
   PageSize* pageSize() const { return m_pageSize; }
   MiniPage* miniPage() const { return m_miniPage; }
+  Orientation orientation() const { return m_orientation; }
+  void setOrientation(Orientation _orientation) { m_orientation = _orientation; emit(orientationChanged()); }
 signals:
   void windowChanged();
   void filenameChanged();
   void modeChanged();
+  void orientationChanged();
 private slots:
   void updatePageSize();
 private:
@@ -58,6 +67,7 @@ private:
   MiniPage*     m_miniPage;
   QList<QRect>  m_miniPages;
   int           m_miniPageIndex;
+  Orientation   m_orientation;
 };
 
 #endif // PRINTER_H

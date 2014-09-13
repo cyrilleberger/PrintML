@@ -8,7 +8,7 @@
 #include "PageSize.h"
 
 Printer::Printer(QQuickItem *parent):
-  QQuickItem(parent), m_window(0), m_printer(0), m_painter(0), m_mode(GRAB_IMAGE), m_pageSize(new PageSize), m_miniPage(new MiniPage)
+  QQuickItem(parent), m_window(0), m_printer(0), m_painter(0), m_mode(GRAB_IMAGE), m_pageSize(new PageSize), m_miniPage(new MiniPage), m_orientation(Portrait)
 {
   // By default, QQuickItem does not draw anything. If you subclass
   // QQuickItem to create a visual item, you will need to uncomment the
@@ -44,6 +44,7 @@ void Printer::startPrinting()
   m_printer->setFullPage(true);
   m_printer->setOutputFileName(m_filename);
   m_printer->setPageSize(m_pageSize->pageSize());
+  m_printer->setOrientation(QPrinter::Orientation(m_orientation));
 
   // Setup mini pages
   const int miniPageWidth  = m_pageSize->width() / m_miniPage->columns();

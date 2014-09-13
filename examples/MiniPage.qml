@@ -12,6 +12,7 @@ Item {
     window: printwindow
     filename: "testprint.pdf"
     pageSize.pageSizeId: PageSize.A0
+    orientation: Printer.Landscape
     miniPage.rows: 2
     miniPage.columns: 3
     miniPage.margin: 10
