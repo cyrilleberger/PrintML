@@ -57,8 +57,7 @@ void Printer::startPrinting()
     for(int c = 0; c < m_miniPage->columns(); ++c)
     {
       QRect rect(c * miniPageWidth, r * miniPageHeight, miniPageWidth, miniPageHeight);
-      rect.marginsRemoved(miniPageMargins);
-      m_miniPages.append(rect);
+      m_miniPages.append(rect.marginsRemoved(miniPageMargins));
     }
   }
 
