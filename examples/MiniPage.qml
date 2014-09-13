@@ -47,11 +47,11 @@ Item {
     anchors.fill: parent
     onClicked:
     {
-      printer.startPrinting();
+      printer.beginPrinting();
       for(var i = 0; i <4; ++i)
       {
         printer.printWindow();
-        printer.startNewPage();
+        printer.newPage();
       }
       textToPrint.text = "New text";
       rectangleToPrint.color = "blue";
@@ -68,7 +68,7 @@ Item {
       for(var i = 0; i <4; ++i)
       {
         printer.printWindow();
-        printer.startNewPage();
+        printer.newPage();
       }
       printer.endPrinting();
       startPrinting.text = "done";

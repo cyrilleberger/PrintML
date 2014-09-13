@@ -43,8 +43,8 @@ public:
   Printer(QQuickItem *parent = 0);
   ~Printer();
 public:
-  Q_INVOKABLE void startPrinting();
-  Q_INVOKABLE void startNewPage();
+  Q_INVOKABLE void beginPrinting();
+  Q_INVOKABLE void newPage();
   Q_INVOKABLE void printWindow();
   Q_INVOKABLE void endPrinting();
 public:

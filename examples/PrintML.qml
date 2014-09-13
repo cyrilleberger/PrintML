@@ -44,9 +44,9 @@ Item {
     anchors.fill: parent
     onClicked:
     {
-      printer.startPrinting();
+      printer.beginPrinting();
       printer.printWindow();
-      printer.startNewPage();
+      printer.newPage();
       textToPrint.text = "New text";
       rectangleToPrint.color = "blue";
       printwindow.height = 300;

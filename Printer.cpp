@@ -31,7 +31,7 @@ Printer::~Printer()
   endPrinting();
 }
 
-void Printer::startPrinting()
+void Printer::beginPrinting()
 {
   if(not m_window)
   {
@@ -102,7 +102,7 @@ void Printer::printWindow()
   }
 }
 
-void Printer::startNewPage()
+void Printer::newPage()
 {
   if(not m_printer)
   {
