@@ -11,17 +11,20 @@ SOURCES += \
     Printer.cpp \
     PrintMLPlugin.cpp \
     PageSize.cpp \
-    MiniPage.cpp
+    MiniPage.cpp \
+    QuickItemPainter.cpp
 
 HEADERS += \
     Printer.h \
     PrintMLPlugin.h \
     PageSize.h \
-    MiniPage.h
+    MiniPage.h \
+    QuickItemPainter.h
 
 OTHER_FILES = qmldir \
     examples/PrintML.qml \
-    examples/MiniPage.qml
+    examples/MiniPage.qml \
+    examples/Efficient.qml
 
 !equals(_PRO_FILE_PWD_, $$OUT_PWD) {
     copy_qmldir.target = $$OUT_PWD/qmldir

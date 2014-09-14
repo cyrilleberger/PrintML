@@ -14,9 +14,10 @@
 
 #include "MiniPage.h"
 #include "PageSize.h"
+#include "QuickItemPainter.h"
 
 Printer::Printer(QQuickItem *parent):
-  QQuickItem(parent), m_window(0), m_printer(0), m_painter(0), m_mode(GRAB_IMAGE), m_pageSize(new PageSize), m_miniPage(new MiniPage), m_orientation(Portrait)
+  QQuickItem(parent), m_window(0), m_printer(0), m_painter(0), m_mode(GRAB_IMAGE), m_pageSize(new PageSize), m_miniPage(new MiniPage), m_orientation(Portrait), m_itemPainter(0)
 {
   // By default, QQuickItem does not draw anything. If you subclass
   // QQuickItem to create a visual item, you will need to uncomment the
@@ -72,6 +73,8 @@ void Printer::beginPrinting()
   m_painter = new QPainter;
   m_painter->begin(m_printer);
   m_miniPageIndex = 0;
+
+  m_itemPainter = new QuickItemPainter(m_painter, m_window);
 }
 
 void Printer::printWindow()
@@ -81,24 +84,36 @@ void Printer::printWindow()
     qWarning() << "Printing not started";
     return;
   }
+  QRect pageRect = m_miniPages[m_miniPageIndex];
+  QSize targetSize = m_window->size();
+  targetSize.scale(pageRect.width(), pageRect.height(), Qt::KeepAspectRatio);
+  QSize trans_size = 0.5 * (pageRect.size() - targetSize);
+  QPoint trans(trans_size.width(), trans_size.height());
+  m_painter->save();
+  QRect viewport = QRect(trans + pageRect.topLeft(), targetSize);
+  m_painter->setViewport(viewport);
+  m_painter->setWindow(0, 0, m_window->width(), m_window->height());
+
   switch (m_mode)
   {
   case GRAB_IMAGE:
     {
       QImage image = m_window->grabWindow();
-
-      QRect pageRect = m_miniPages[m_miniPageIndex];
-      QSize targetSize = image.size();
-      targetSize.scale(pageRect.width(), pageRect.height(), Qt::KeepAspectRatio);
-      QSize trans_size = 0.5 * (pageRect.size() - targetSize);
-      QPoint trans(trans_size.width(), trans_size.height());
-      m_painter->drawImage(QRectF(trans + pageRect.topLeft(), targetSize), image);
+      Q_ASSERT(image.size() == m_window->size());
+      m_painter->drawImage(0, 0, image);
     }
     break;
+  case EFFICIENT:
+    {
+      m_itemPainter->paintItem(m_window->contentItem());
+
+      break;
+    }
   default:
     qWarning() << "Unimplemented printing mode.";
     break;
   }
+  m_painter->restore();
 }
 
 void Printer::newPage()

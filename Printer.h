@@ -15,6 +15,7 @@ class QPrinter;
 
 class MiniPage;
 class PageSize;
+class QuickItemPainter;
 
 class Printer : public QQuickItem
 {
@@ -76,6 +77,7 @@ private:
   QList<QRect>  m_miniPages;
   int           m_miniPageIndex;
   Orientation   m_orientation;
+  QuickItemPainter* m_itemPainter;
 };
 
 #endif // PRINTER_H
