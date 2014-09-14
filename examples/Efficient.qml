@@ -29,7 +29,25 @@ Item {
       id: rectangleToPrint
       anchors.fill: parent
       color: "red"
-      Text {
+      Rectangle {
+        x: 2
+        y: 4
+        width: 30
+        height: 40
+        color: "orange"
+        radius: 15
+        border.width: 1
+//        border.color: "white"
+      }
+      Rectangle {
+        x: 40
+        y: 30
+        width: 5
+        height: 2
+        color: "orange"
+        radius: 1
+        border.width: 0
+      }      Text {
         id: textToPrint
         text: "Text to be printed"
         color: "green"
