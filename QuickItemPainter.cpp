@@ -28,7 +28,7 @@ void QuickItemPainter::paintQuickRectangleItem(QQuickItem* _item)
   const QRect rect = _item->mapRectToScene(_item->boundingRect()).toRect(); // TODO should it be set on the QPainter ?
   const QColor color = _item->property("color").value<QColor>();
   const QObject* border = _item->property("border").value<QObject*>();
-  const int border_width = border->property("width").value<int>();
+  const qreal border_width = border->property("width").value<qreal>();
   const QColor border_color = border->property("color").value<QColor>();
   const qreal radius = _item->property("radius").value<qreal>();
 
