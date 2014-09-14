@@ -49,14 +49,14 @@ void Printer::beginPrinting()
     return;
   }
   m_printer = new QPrinter;
-  m_printer->setFullPage(true);
+//  m_printer->setFullPage(true); // TODO: reintroduce as an option
   m_printer->setOutputFileName(m_filename);
   m_printer->setPageSize(m_pageSize->pageSize());
   m_printer->setOrientation(QPrinter::Orientation(m_orientation));
 
   // Setup mini pages
-  const int miniPageWidth  = m_pageSize->width() / m_miniPage->columns();
-  const int miniPageHeight = m_pageSize->height() / m_miniPage->rows();
+  const int miniPageWidth  = m_printer->pageRect().width() / m_miniPage->columns();
+  const int miniPageHeight = m_printer->pageRect().height() / m_miniPage->rows();
   const int miniPageMargin = m_miniPage->margin();
   const QMargins miniPageMargins(miniPageMargin, miniPageMargin, miniPageMargin, miniPageMargin);
 
@@ -64,14 +64,13 @@ void Printer::beginPrinting()
   {
     for(int c = 0; c < m_miniPage->columns(); ++c)
     {
-      QRect rect(c * miniPageWidth, r * miniPageHeight, miniPageWidth, miniPageHeight);
+      QRect rect(c * miniPageWidth + m_printer->pageRect().x(), r * miniPageHeight + m_printer->pageRect().y(), miniPageWidth, miniPageHeight);
       m_miniPages.append(rect.marginsRemoved(miniPageMargins));
     }
   }
 
   m_painter = new QPainter;
   m_painter->begin(m_printer);
-  m_painter->setWindow(0, 0, m_pageSize->width(), m_pageSize->height());
   m_miniPageIndex = 0;
 }
 
@@ -110,7 +109,6 @@ void Printer::newPage()
     return;
   }
   ++m_miniPageIndex;
-  qDebug() << m_miniPageIndex << m_miniPages.size();
   if(m_miniPageIndex >= m_miniPages.size())
   {
     m_miniPageIndex = 0;
@@ -134,7 +132,6 @@ void Printer::updatePageSize()
 {
   if(m_printer)
   {
-    qDebug() << "updatePageSize" << m_pageSize->width() << " " << m_pageSize->height();
     m_printer->setPageSize(m_pageSize->pageSize());
   }
 }
