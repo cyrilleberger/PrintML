@@ -12,6 +12,7 @@ public:
   void paintItem(QQuickItem* _item);
 private:
   void paintQuickRectangleItem(QQuickItem* _item);
+  void paintQuickTextItem(QQuickItem* _item);
 private:
   QPainter* m_painter;
   QQuickWindow* m_window;

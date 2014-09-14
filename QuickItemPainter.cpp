@@ -25,7 +25,7 @@ namespace {
 void QuickItemPainter::paintQuickRectangleItem(QQuickItem* _item)
 {
   // Print rectangle
-  QRect rect = _item->mapRectToScene(_item->boundingRect()).toRect(); // TODO should it be set on the QPainter ?
+  const QRect rect = _item->mapRectToScene(_item->boundingRect()).toRect(); // TODO should it be set on the QPainter ?
   const QColor color = _item->property("color").value<QColor>();
   const QObject* border = _item->property("border").value<QObject*>();
   const int border_width = border->property("width").value<int>();
@@ -50,6 +50,23 @@ void QuickItemPainter::paintQuickRectangleItem(QQuickItem* _item)
 
 }
 
+void QuickItemPainter::paintQuickTextItem(QQuickItem* _item)
+{
+  const QRect rect = _item->mapRectToScene(_item->boundingRect()).toRect(); // TODO should it be set on the QPainter ?
+  const QFont font = _item->property("font").value<QFont>();
+  const QString text = _item->property("text").value<QString>();
+  const QColor color = _item->property("color").value<QColor>();
+  const int wrapMode = _item->property("wrapMode").value<int>();
+
+  QTextOption textOption;
+
+  textOption.setWrapMode(QTextOption::WrapMode(wrapMode));
+
+  m_painter->setFont(font);
+  m_painter->setPen(color);
+  m_painter->drawText(rect, text, textOption);
+}
+
 void QuickItemPainter::paintItem(QQuickItem* _item)
 {
   if(_item->flags().testFlag(QQuickItem::ItemHasContents))
@@ -62,6 +79,9 @@ void QuickItemPainter::paintItem(QQuickItem* _item)
     if(inherits(_item->metaObject(), "QQuickRectangle"))
     {
       paintQuickRectangleItem(_item);
+    } else if(inherits(_item->metaObject(), "QQuickText"))
+    {
+      paintQuickTextItem(_item);
     } else {
       // Fallback
       qWarning() << "No QuickItemPainter::paintItem implementation for " << _item << " fallback to image grab";
