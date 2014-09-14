@@ -37,7 +37,7 @@ Item {
         color: "orange"
         radius: 15
         border.width: 1
-//        border.color: "white"
+        border.color: "white"
       }
       Rectangle {
         x: 40

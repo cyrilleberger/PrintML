@@ -34,7 +34,7 @@ void QuickItemPainter::paintQuickRectangleItem(QQuickItem* _item)
 
   m_painter->setBrush(color);
 
-  if(border_width > 0)
+  if(border_width > 0 and not (border_width == 1 and border_color == QColor(Qt::black))) // FIXME this is wrong, but there is no other clean way to detect if a border is valid or not
   {
     m_painter->setPen(QPen(border_color, border_width));
   } else {
