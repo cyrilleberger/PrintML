@@ -86,9 +86,9 @@ public:
                                   const QUrl &baseUrl,
                                   QQmlContext *context,
                                   bool preloadImages,
-                                  bool *fontSizeModified)
+                                  bool *fontSizeModified, QTextCharFormat defaultFormat)
         : text(t), layout(l), imgTags(&imgTags), baseFont(layout.font()), baseUrl(baseUrl), hasNewLine(true), nbImages(0), updateImagePositions(false)
-        , preFormat(false), prependSpace(false), hasSpace(true), preloadImages(preloadImages), fontSizeModified(fontSizeModified), context(context)
+        , preFormat(false), prependSpace(false), hasSpace(true), preloadImages(preloadImages), fontSizeModified(fontSizeModified), context(context), defaultFormat(defaultFormat)
     {
     }
 
@@ -129,6 +129,7 @@ public:
     bool preloadImages;
     bool *fontSizeModified;
     QQmlContext *context;
+    QTextCharFormat defaultFormat;
 
     static const QChar lessThan;
     static const QChar greaterThan;
@@ -163,8 +164,8 @@ StyledText::StyledText(const QString &string, QTextLayout &layout,
                                                const QUrl &baseUrl,
                                                QQmlContext *context,
                                                bool preloadImages,
-                                               bool *fontSizeModified)
-    : d(new StyledTextPrivate(string, layout, imgTags, baseUrl, context, preloadImages, fontSizeModified))
+                                               bool *fontSizeModified, QTextCharFormat defaultFormat)
+    : d(new StyledTextPrivate(string, layout, imgTags, baseUrl, context, preloadImages, fontSizeModified, defaultFormat))
 {
 }
 
@@ -178,11 +179,11 @@ void StyledText::parse(const QString &string, QTextLayout &layout,
                                    const QUrl &baseUrl,
                                    QQmlContext *context,
                                    bool preloadImages,
-                                   bool *fontSizeModified)
+                                   bool *fontSizeModified, QTextCharFormat defaultFormat)
 {
     if (string.isEmpty())
         return;
-    StyledText styledText(string, layout, imgTags, baseUrl, context, preloadImages, fontSizeModified);
+    StyledText styledText(string, layout, imgTags, baseUrl, context, preloadImages, fontSizeModified, defaultFormat);
     styledText.d->parse();
 }
 
@@ -190,6 +191,8 @@ void StyledTextPrivate::parse()
 {
     QList<QTextLayout::FormatRange> ranges;
     QStack<QTextCharFormat> formatStack;
+
+    formatStack.push(defaultFormat);
 
     QString drawText;
     drawText.reserve(text.count());
@@ -199,7 +202,7 @@ void StyledTextPrivate::parse()
     int textStart = 0;
     int textLength = 0;
     int rangeStart = 0;
-    bool formatChanged = false;
+    bool formatChanged = true;
 
     const QChar *ch = text.constData();
     while (!ch->isNull()) {

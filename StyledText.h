@@ -84,7 +84,7 @@ public:
                       const QUrl &baseUrl,
                       QQmlContext *context,
                       bool preloadImages,
-                      bool *fontSizeModified);
+                      bool *fontSizeModified, QTextCharFormat defaultFormat);
 
 private:
     StyledText(const QString &string, QTextLayout &layout,
@@ -92,7 +92,7 @@ private:
                            const QUrl &baseUrl,
                            QQmlContext *context,
                            bool preloadImages,
-                           bool *fontSizeModified);
+                           bool *fontSizeModified, QTextCharFormat defaultFormat);
     ~StyledText();
 
     StyledTextPrivate *d;

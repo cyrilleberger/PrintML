@@ -87,9 +87,12 @@ void QuickItemPainter::paintQuickText(QQuickItem* _item)
       QTextLayout textLayout;
       textLayout.setFont(font);
       textLayout.setTextOption(textOption);
+      QTextCharFormat defaultFormat;
+      defaultFormat.setForeground(color);
 
       QList<StyledTextImgTag*> tags;
-      StyledText::parse(text, textLayout, tags, QUrl(), qmlContext(_item), true, &fontModified);
+      StyledText::parse(text, textLayout, tags, QUrl(), qmlContext(_item), true, &fontModified, defaultFormat);
+
 
       textLayout.beginLayout();
       int height = 0;
