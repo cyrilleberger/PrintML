@@ -62,9 +62,12 @@ void QuickItemPainter::paintQuickText(QQuickItem* _item)
   const QColor color = _item->property("color").value<QColor>();
   const int wrapMode = _item->property("wrapMode").value<int>();
   int textFormat = _item->property("textFormat").value<int>();
+  const int horizontalAlignment = _item->property("horizontalAlignment").value<int>();
+  const int verticalAlignment   = _item->property("verticalAlignment").value<int>();
 
   QTextOption textOption;
   textOption.setWrapMode(QTextOption::WrapMode(wrapMode));
+  textOption.setAlignment((Qt::Alignment)(horizontalAlignment | verticalAlignment));
 
   if(textFormat == 0) /* Text.AutoText */
   {
