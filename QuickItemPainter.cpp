@@ -69,14 +69,14 @@ void QuickItemPainter::paintQuickText(QQuickItem* _item)
   textOption.setWrapMode(QTextOption::WrapMode(wrapMode));
   textOption.setAlignment((Qt::Alignment)(horizontalAlignment | verticalAlignment));
 
-  if(textFormat == 0) /* Text.AutoText */
+  if(textFormat == Qt::AutoText) /* Text.AutoText */
   {
-    textFormat = Qt::mightBeRichText(text) ? 2 : 1;
+    textFormat = Qt::mightBeRichText(text) ? 4 : Qt::PlainText;
   }
 
   switch (textFormat)
   {
-  case 1: // Text.PlainText
+  case Qt::PlainText: // Text.PlainText
     {
       m_painter->setFont(font);
       m_painter->setPen(color);
@@ -84,7 +84,7 @@ void QuickItemPainter::paintQuickText(QQuickItem* _item)
     }
     break;
   default:
-  case 2: // Text.StyledText
+  case 4: // Text.StyledText
     {
       bool fontModified;
       QTextLayout textLayout;
@@ -116,7 +116,7 @@ void QuickItemPainter::paintQuickText(QQuickItem* _item)
       textLayout.draw(m_painter, rect.topLeft());
     }
     break;
-  case 3: // Text.RichText
+  case Qt::RichText: // Text.RichText
     {
       QTextDocument doc;
       doc.setTextWidth(rect.width());
