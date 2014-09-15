@@ -12,14 +12,16 @@ SOURCES += \
     PrintMLPlugin.cpp \
     PageSize.cpp \
     MiniPage.cpp \
-    QuickItemPainter.cpp
+    QuickItemPainter.cpp \
+    StyledText.cpp
 
 HEADERS += \
     Printer.h \
     PrintMLPlugin.h \
     PageSize.h \
     MiniPage.h \
-    QuickItemPainter.h
+    QuickItemPainter.h \
+    StyledText.h
 
 OTHER_FILES = qmldir \
     examples/PrintML.qml \

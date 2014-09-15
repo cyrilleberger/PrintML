@@ -6,6 +6,8 @@
 #include <QQuickWindow>
 #include <QTextDocument>
 
+#include "StyledText.h"
+
 QuickItemPainter::QuickItemPainter(QPainter* _painter, QQuickWindow* _window) : m_painter(_painter), m_window(_window)
 {
 }
@@ -59,34 +61,74 @@ void QuickItemPainter::paintQuickText(QQuickItem* _item)
   const QString text = _item->property("text").value<QString>();
   const QColor color = _item->property("color").value<QColor>();
   const int wrapMode = _item->property("wrapMode").value<int>();
-  const int textFormat = _item->property("textFormat").value<int>();
+  int textFormat = _item->property("textFormat").value<int>();
 
   QTextOption textOption;
   textOption.setWrapMode(QTextOption::WrapMode(wrapMode));
 
-  bool richText = (textFormat == 2 /* Text.RichText*/) or (textFormat == 0 /* Text.AutoText */ and Qt::mightBeRichText(text));
-
-  if(richText)
+  if(textFormat == 0) /* Text.AutoText */
   {
-    QTextDocument doc;
-    doc.setTextWidth(rect.width());
-    doc.setDefaultTextOption(textOption);
-    doc.setDefaultFont(font);
+    textFormat = Qt::mightBeRichText(text) ? 2 : 1;
+  }
 
-    doc.setHtml(text);
+  switch (textFormat)
+  {
+  case 1: // Text.PlainText
+    {
+      m_painter->setFont(font);
+      m_painter->setPen(color);
+      m_painter->drawText(rect, text, textOption);
+    }
+    break;
+  default:
+  case 2: // Text.StyledText
+    {
+      bool fontModified;
+      QTextLayout textLayout;
+      textLayout.setFont(font);
+      textLayout.setTextOption(textOption);
 
-    QAbstractTextDocumentLayout::PaintContext context;
+      QList<StyledTextImgTag*> tags;
+      StyledText::parse(text, textLayout, tags, QUrl(), qmlContext(_item), true, &fontModified);
 
-    context.palette.setColor(QPalette::Text, color);
+      textLayout.beginLayout();
+      int height = 0;
+      const int leading = 0;
+      while (1) {
+          QTextLine line = textLayout.createLine();
+          if (!line.isValid())
+              break;
 
-    QAbstractTextDocumentLayout *layout = doc.documentLayout();
-    m_painter->translate(rect.topLeft());
-    m_painter->setRenderHint(QPainter::Antialiasing, true);
-    layout->draw(m_painter, context);
- } else {
-    m_painter->setFont(font);
-    m_painter->setPen(color);
-    m_painter->drawText(rect, text, textOption);
+          line.setLineWidth(_item->width());
+          height += leading;
+          line.setPosition(QPointF(0, height));
+          height += line.height();
+      }
+      textLayout.endLayout();
+
+      m_painter->setRenderHint(QPainter::Antialiasing, true);
+      textLayout.draw(m_painter, rect.topLeft());
+    }
+    break;
+  case 3: // Text.RichText
+    {
+      QTextDocument doc;
+      doc.setTextWidth(rect.width());
+      doc.setDefaultTextOption(textOption);
+      doc.setDefaultFont(font);
+
+      doc.setHtml(text);
+
+      QAbstractTextDocumentLayout::PaintContext context;
+
+      context.palette.setColor(QPalette::Text, color);
+
+      QAbstractTextDocumentLayout *layout = doc.documentLayout();
+      m_painter->translate(rect.topLeft());
+      m_painter->setRenderHint(QPainter::Antialiasing, true);
+      layout->draw(m_painter, context);
+    }
+    break;
   }
 }
 
