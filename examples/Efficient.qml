@@ -47,7 +47,8 @@ Item {
         color: "orange"
         radius: 1
         border.width: 0
-      }      Text {
+      }
+      Text {
         id: textToPrint
         text: "Text to be printed"
         color: "green"
@@ -72,7 +73,7 @@ Item {
         printer.printWindow();
         printer.newPage();
       }
-      textToPrint.text = "New text";
+      textToPrint.text = "New <b>text</b>";
       rectangleToPrint.color = "blue";
       printwindow.height = 300;
       timer.start();

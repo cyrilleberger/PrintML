@@ -1,8 +1,10 @@
 #include "QuickItemPainter.h"
 
+#include <QAbstractTextDocumentLayout>
 #include <QPainter>
 #include <QQuickItem>
 #include <QQuickWindow>
+#include <QTextDocument>
 
 QuickItemPainter::QuickItemPainter(QPainter* _painter, QQuickWindow* _window) : m_painter(_painter), m_window(_window)
 {
@@ -57,14 +59,35 @@ void QuickItemPainter::paintQuickText(QQuickItem* _item)
   const QString text = _item->property("text").value<QString>();
   const QColor color = _item->property("color").value<QColor>();
   const int wrapMode = _item->property("wrapMode").value<int>();
+  const int textFormat = _item->property("textFormat").value<int>();
 
   QTextOption textOption;
-
   textOption.setWrapMode(QTextOption::WrapMode(wrapMode));
 
-  m_painter->setFont(font);
-  m_painter->setPen(color);
-  m_painter->drawText(rect, text, textOption);
+  bool richText = (textFormat == 2 /* Text.RichText*/) or (textFormat == 0 /* Text.AutoText */ and Qt::mightBeRichText(text));
+
+  if(richText)
+  {
+    QTextDocument doc;
+    doc.setTextWidth(rect.width());
+    doc.setDefaultTextOption(textOption);
+    doc.setDefaultFont(font);
+
+    doc.setHtml(text);
+
+    QAbstractTextDocumentLayout::PaintContext context;
+
+    context.palette.setColor(QPalette::Text, color);
+
+    QAbstractTextDocumentLayout *layout = doc.documentLayout();
+    m_painter->translate(rect.topLeft());
+    m_painter->setRenderHint(QPainter::Antialiasing, true);
+    layout->draw(m_painter, context);
+ } else {
+    m_painter->setFont(font);
+    m_painter->setPen(color);
+    m_painter->drawText(rect, text, textOption);
+  }
 }
 
 void QuickItemPainter::paintQuickImage(QQuickItem* _item)
@@ -113,6 +136,7 @@ void QuickItemPainter::paintItem(QQuickItem* _item)
 {
   if(_item->flags().testFlag(QQuickItem::ItemHasContents))
   {
+    m_painter->save();
     if(_item->clip())
     {
       m_painter->setClipping(true);
@@ -134,14 +158,13 @@ void QuickItemPainter::paintItem(QQuickItem* _item)
       QImage image = m_window->grabWindow();
       m_painter->drawImage(rect.x(), rect.y(), image, rect.x(), rect.y(), rect.width(), rect.height());
     }
+    m_painter->restore();
   }
   foreach(QQuickItem* child, _item->childItems()) // TODO reorder to take into account z-order
   {
     if(child and child->isVisible())
     {
-      m_painter->save();
       paintItem(child);
-      m_painter->restore();
     }
   }
 }
