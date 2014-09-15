@@ -22,7 +22,7 @@ namespace {
   }
 }
 
-void QuickItemPainter::paintQuickRectangleItem(QQuickItem* _item)
+void QuickItemPainter::paintQuickRectangle(QQuickItem* _item)
 {
   // Print rectangle
   const QRect rect = _item->mapRectToScene(_item->boundingRect()).toRect(); // TODO should it be set on the QPainter ?
@@ -50,7 +50,7 @@ void QuickItemPainter::paintQuickRectangleItem(QQuickItem* _item)
 
 }
 
-void QuickItemPainter::paintQuickTextItem(QQuickItem* _item)
+void QuickItemPainter::paintQuickText(QQuickItem* _item)
 {
   const QRect rect = _item->mapRectToScene(_item->boundingRect()).toRect(); // TODO should it be set on the QPainter ?
   const QFont font = _item->property("font").value<QFont>();
@@ -67,6 +67,48 @@ void QuickItemPainter::paintQuickTextItem(QQuickItem* _item)
   m_painter->drawText(rect, text, textOption);
 }
 
+void QuickItemPainter::paintQuickImage(QQuickItem* _item)
+{
+  const QUrl url = _item->property("source").value<QUrl>();
+  const int fillMode = _item->property("fillMode").value<int>();
+
+  QImage image(url.toLocalFile());
+
+  QRect rect = _item->mapRectToScene(_item->boundingRect()).toRect(); // TODO should it be set on the QPainter ?
+  QRect sourceRect(0, 0, image.width(), image.height());
+
+  switch(fillMode)
+  {
+  default:
+    qWarning() << "QuickItemPainter::paintQuickImage unimplemented fill mode: " << fillMode;
+  case 0: // Image.Stretch
+    break;
+  case 1: // Image.PreserveAspectFit
+    {
+      QSize size = sourceRect.size();
+      size.scale(rect.width(), rect.height(), Qt::KeepAspectRatio);
+      break;
+    }
+  case 6: // Image.Pad
+    {
+      if(sourceRect.width() > rect.width())
+      {
+        rect.setWidth(sourceRect.width());
+      } else {
+        sourceRect.setWidth(rect.width());
+      }
+      if(sourceRect.height() > rect.height())
+      {
+        rect.setHeight(sourceRect.height());
+      } else {
+        sourceRect.setHeight(rect.height());
+      }
+      break;
+    }
+  }
+  m_painter->drawImage(rect, image, sourceRect);
+}
+
 void QuickItemPainter::paintItem(QQuickItem* _item)
 {
   if(_item->flags().testFlag(QQuickItem::ItemHasContents))
@@ -78,10 +120,13 @@ void QuickItemPainter::paintItem(QQuickItem* _item)
     }
     if(inherits(_item->metaObject(), "QQuickRectangle"))
     {
-      paintQuickRectangleItem(_item);
+      paintQuickRectangle(_item);
     } else if(inherits(_item->metaObject(), "QQuickText"))
     {
-      paintQuickTextItem(_item);
+      paintQuickText(_item);
+    } else if(inherits(_item->metaObject(), "QQuickImage"))
+    {
+      paintQuickImage(_item);
     } else {
       // Fallback
       qWarning() << "No QuickItemPainter::paintItem implementation for " << _item << " fallback to image grab";

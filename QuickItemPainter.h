@@ -11,8 +11,9 @@ public:
   QuickItemPainter(QPainter* _painter, QQuickWindow* _window);
   void paintItem(QQuickItem* _item);
 private:
-  void paintQuickRectangleItem(QQuickItem* _item);
-  void paintQuickTextItem(QQuickItem* _item);
+  void paintQuickRectangle(QQuickItem* _item);
+  void paintQuickText(QQuickItem* _item);
+  void paintQuickImage(QQuickItem* _item);
 private:
   QPainter* m_painter;
   QQuickWindow* m_window;
