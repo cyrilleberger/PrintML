@@ -182,6 +182,7 @@ void QuickItemPainter::paintQuickImage(QQuickItem* _item)
 
 void QuickItemPainter::paintItem(QQuickItem* _item)
 {
+  if(_item->opacity() == 0.0) return;
   if(_item->flags().testFlag(QQuickItem::ItemHasContents))
   {
     m_painter->save();
