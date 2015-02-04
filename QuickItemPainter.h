@@ -10,6 +10,7 @@ class QuickItemPainter
 public:
   QuickItemPainter(QPainter* _painter, QQuickWindow* _window);
   void paintItem(QQuickItem* _item);
+  void setDebugVerbose(bool _debugVerbose) { m_debugVerbose = _debugVerbose; }
 private:
   void paintQuickRectangle(QQuickItem* _item);
   void paintQuickText(QQuickItem* _item);
@@ -17,6 +18,7 @@ private:
 private:
   QPainter* m_painter;
   QQuickWindow* m_window;
+  bool m_debugVerbose;
 };
 
 #endif // QUICKITEMPAINTER_H

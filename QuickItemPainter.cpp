@@ -8,7 +8,7 @@
 
 #include "StyledText.h"
 
-QuickItemPainter::QuickItemPainter(QPainter* _painter, QQuickWindow* _window) : m_painter(_painter), m_window(_window)
+QuickItemPainter::QuickItemPainter(QPainter* _painter, QQuickWindow* _window) : m_painter(_painter), m_window(_window), m_debugVerbose(false)
 {
 }
 
@@ -35,6 +35,17 @@ void QuickItemPainter::paintQuickRectangle(QQuickItem* _item)
   const qreal border_width = border->property("width").value<qreal>();
   const QColor border_color = border->property("color").value<QColor>();
   const qreal radius = _item->property("radius").value<qreal>();
+
+  if(m_debugVerbose)
+  {
+    qDebug() << "Print rectangle";
+    qDebug() << "   rect:        " << rect;
+    qDebug() << "   color:       " << color;
+    qDebug() << "   radius:      " << radius;
+    qDebug() << "   border.width:" << border_width;
+    qDebug() << "   border.color:" << border_color;
+    qDebug() << _item->isVisible() << _item->opacity();
+  }
 
   m_painter->setBrush(color);
 
@@ -72,6 +83,18 @@ void QuickItemPainter::paintQuickText(QQuickItem* _item)
   if(textFormat == Qt::AutoText) /* Text.AutoText */
   {
     textFormat = Qt::mightBeRichText(text) ? 4 : Qt::PlainText;
+  }
+
+  if(m_debugVerbose)
+  {
+    qDebug() << "Print text";
+    qDebug() << "   rect:               " << rect;
+    qDebug() << "   font:               " << font;
+    qDebug() << "   text:               " << text;
+    qDebug() << "   color:              " << color;
+    qDebug() << "   textFormat:         " << textFormat;
+    qDebug() << "   horizontalAlignment:" << horizontalAlignment;
+    qDebug() << "   verticalAlignment:  " << verticalAlignment;
   }
 
   switch (textFormat)
@@ -180,8 +203,23 @@ void QuickItemPainter::paintQuickImage(QQuickItem* _item)
   m_painter->drawImage(rect, image, sourceRect);
 }
 
+struct ZCompare
+{
+  bool operator()(const QQuickItem* _a, const QQuickItem* _b)
+  {
+    return _a->z() < _b->z();
+  }
+};
+
 void QuickItemPainter::paintItem(QQuickItem* _item)
 {
+  if(m_debugVerbose)
+  {
+    qDebug() << "paintItem " << _item;
+    qDebug() << "  opacity: " << _item->opacity();
+    qDebug() << "  visible: " << _item->isVisible();
+    qDebug() << "  z:       " << _item->z();
+  }
   if(_item->opacity() == 0.0) return;
   if(_item->flags().testFlag(QQuickItem::ItemHasContents))
   {

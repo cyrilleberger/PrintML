@@ -40,6 +40,7 @@ private:
   Q_PROPERTY(PageSize* pageSize READ pageSize)
   Q_PROPERTY(MiniPage* miniPage READ miniPage)
   Q_PROPERTY(Orientation orientation READ orientation WRITE setOrientation NOTIFY orientationChanged)
+  Q_PROPERTY(bool debugVerbose READ debugVerbose WRITE setDebugVerbose NOTIFY debugVerboseChanged)
 public:
   Printer(QQuickItem *parent = 0);
   ~Printer();
@@ -59,11 +60,14 @@ public:
   MiniPage* miniPage() const { return m_miniPage; }
   Orientation orientation() const { return m_orientation; }
   void setOrientation(Orientation _orientation) { m_orientation = _orientation; emit(orientationChanged()); }
+  bool debugVerbose() const { return m_debugVerbose; }
+  void setDebugVerbose(bool _debugVerbose) { m_debugVerbose = _debugVerbose; emit(debugVerboseChanged()); }
 signals:
   void windowChanged();
   void filenameChanged();
   void modeChanged();
   void orientationChanged();
+  void debugVerboseChanged();
 private slots:
   void updatePageSize();
 private:
@@ -78,6 +82,7 @@ private:
   int           m_miniPageIndex;
   Orientation   m_orientation;
   QuickItemPainter* m_itemPainter;
+  bool          m_debugVerbose;
 };
 
 #endif // PRINTER_H

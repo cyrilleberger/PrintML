@@ -17,7 +17,7 @@
 #include "QuickItemPainter.h"
 
 Printer::Printer(QQuickItem *parent):
-  QQuickItem(parent), m_window(0), m_printer(0), m_painter(0), m_mode(GRAB_IMAGE), m_pageSize(new PageSize), m_miniPage(new MiniPage), m_orientation(Portrait), m_itemPainter(0)
+  QQuickItem(parent), m_window(0), m_printer(0), m_painter(0), m_mode(GRAB_IMAGE), m_pageSize(new PageSize), m_miniPage(new MiniPage), m_orientation(Portrait), m_itemPainter(0), m_debugVerbose(false)
 {
   // By default, QQuickItem does not draw anything. If you subclass
   // QQuickItem to create a visual item, you will need to uncomment the
@@ -105,6 +105,7 @@ void Printer::printWindow()
     break;
   case EFFICIENT:
     {
+      m_itemPainter->setDebugVerbose(m_debugVerbose);
       m_itemPainter->paintItem(m_window->contentItem());
 
       break;
