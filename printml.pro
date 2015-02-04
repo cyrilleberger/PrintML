@@ -4,7 +4,7 @@ QT += qml quick printsupport
 CONFIG += qt plugin
 
 TARGET = $$qtLibraryTarget($$TARGET)
-uri = org.slidesml.print
+uri = org.storyml.print
 
 # Input
 SOURCES += \
