@@ -209,7 +209,9 @@ void QuickItemPainter::paintItem(QQuickItem* _item)
     }
     m_painter->restore();
   }
-  foreach(QQuickItem* child, _item->childItems()) // TODO reorder to take into account z-order
+  QList<QQuickItem*> children = _item->childItems();
+  std::stable_sort(children.begin(), children.end(), ZCompare());
+  foreach(QQuickItem* child, children) // TODO reorder to take into account z-order
   {
     if(child and child->isVisible())
     {
