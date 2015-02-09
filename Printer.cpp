@@ -61,12 +61,26 @@ void Printer::beginPrinting()
   const int miniPageMargin = m_miniPage->margin();
   const QMargins miniPageMargins(miniPageMargin, miniPageMargin, miniPageMargin, miniPageMargin);
 
+  m_miniPages.clear();
   for(int r = 0; r < m_miniPage->rows(); ++r)
   {
     for(int c = 0; c < m_miniPage->columns(); ++c)
     {
       QRect rect(c * miniPageWidth + m_printer->pageRect().x(), r * miniPageHeight + m_printer->pageRect().y(), miniPageWidth, miniPageHeight);
       m_miniPages.append(rect.marginsRemoved(miniPageMargins));
+    }
+  }
+
+  if(m_debugVerbose)
+  {
+    qDebug() << "Start printing";
+    qDebug() << "  miniPage.columns: " << m_miniPage->columns();
+    qDebug() << "  miniPage.rows:    " << m_miniPage->rows();
+    qDebug() << "  miniPage.margin:  " << m_miniPage->margin();
+    qDebug() << "  miniPages";
+    for(int i = 0; i < m_miniPages.count(); ++i)
+    {
+      qDebug() << "    " << i << ":" << m_miniPages.at(i);
     }
   }
 
@@ -93,6 +107,15 @@ void Printer::printWindow()
   QRect viewport = QRect(trans + pageRect.topLeft(), targetSize);
   m_painter->setViewport(viewport);
   m_painter->setWindow(0, 0, m_window->width(), m_window->height());
+
+  if(m_debugVerbose)
+  {
+    qDebug() << "Print window";
+    qDebug() << "  pageRect:    " << pageRect;
+    qDebug() << "  targetSize:  " << targetSize;
+    qDebug() << "  viewport:    " << viewport;
+    qDebug() << "  window:      " << m_window->width() << m_window->height();
+  }
 
   switch (m_mode)
   {
@@ -127,9 +150,17 @@ void Printer::newPage()
   ++m_miniPageIndex;
   if(m_miniPageIndex >= m_miniPages.size())
   {
+    if(m_debugVerbose)
+    {
+      qDebug() << "New page";
+    }
     m_miniPageIndex = 0;
     m_printer->newPage();
+  } else if(m_debugVerbose)
+  {
+    qDebug() << "New mini page" << m_miniPageIndex << " at " << m_miniPages.at(m_miniPageIndex);
   }
+
 }
 
 void Printer::endPrinting()

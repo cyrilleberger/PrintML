@@ -213,16 +213,17 @@ struct ZCompare
 
 void QuickItemPainter::paintItem(QQuickItem* _item)
 {
-  if(m_debugVerbose)
-  {
-    qDebug() << "paintItem " << _item;
-    qDebug() << "  opacity: " << _item->opacity();
-    qDebug() << "  visible: " << _item->isVisible();
-    qDebug() << "  z:       " << _item->z();
-  }
   if(_item->opacity() == 0.0) return;
   if(_item->flags().testFlag(QQuickItem::ItemHasContents))
   {
+    if(m_debugVerbose)
+    {
+      qDebug() << "paintItem " << _item;
+      qDebug() << "  opacity: " << _item->opacity();
+      qDebug() << "  visible: " << _item->isVisible();
+      qDebug() << "  z:       " << _item->z();
+    }
+
     m_painter->save();
     if(_item->clip())
     {
