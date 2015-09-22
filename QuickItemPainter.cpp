@@ -90,11 +90,14 @@ void QuickItemPainter::paintQuickText(QQuickItem* _item)
     qDebug() << "Print text";
     qDebug() << "   rect:               " << rect;
     qDebug() << "   font:               " << font;
+    qDebug() << "   font.pointSizeF:    " << font.pointSizeF();
     qDebug() << "   text:               " << text;
     qDebug() << "   color:              " << color;
     qDebug() << "   textFormat:         " << textFormat;
     qDebug() << "   horizontalAlignment:" << horizontalAlignment;
     qDebug() << "   verticalAlignment:  " << verticalAlignment;
+    QFontMetrics fm(font);
+    qDebug() << "   fontMetric rect:    " << fm.size(0, text);
   }
 
   switch (textFormat)
@@ -103,7 +106,7 @@ void QuickItemPainter::paintQuickText(QQuickItem* _item)
     {
       m_painter->setFont(font);
       m_painter->setPen(color);
-      m_painter->drawText(rect, text, textOption);
+      m_painter->drawText(QRect(rect.x(), rect.y(), rect.width() + 5, rect.height()), text, textOption);
     }
     break;
   default:
