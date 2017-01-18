@@ -49,9 +49,14 @@ void Printer::beginPrinting()
     qWarning() << "No filenames specified";
     return;
   }
+  QString filename = m_filename;
+  if(filename.startsWith("file://"))
+  {
+    filename = filename.right(filename.size() - 7);
+  }
   m_printer = new QPrinter;
 //  m_printer->setFullPage(true); // TODO: reintroduce as an option
-  m_printer->setOutputFileName(m_filename);
+  m_printer->setOutputFileName(filename);
   m_printer->setPageSize(m_pageSize->pageSize());
   m_printer->setOrientation(QPrinter::Orientation(m_orientation));
 

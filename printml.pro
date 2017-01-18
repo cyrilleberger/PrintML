@@ -1,7 +1,7 @@
 TEMPLATE = lib
 TARGET = PrintML
 QT += qml quick printsupport
-CONFIG += qt plugin
+CONFIG += qt plugin C++11
 
 TARGET = $$qtLibraryTarget($$TARGET)
 uri = org.storyml.print
